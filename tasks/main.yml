@@ -4,3 +4,9 @@
 
 - include: RedHat.yml
   when: ansible_os_family == "RedHat"
+
+- name: "Make sure docker is running"
+  service: >
+    name=docker
+    state=started
+    enabled=yes

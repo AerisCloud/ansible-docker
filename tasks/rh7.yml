@@ -1,5 +1,25 @@
 - name: "Install docker"
   yum: >
-    name=docker
-    state=present
+    name={{ item }}
+    state=latest
+  with_items:
+    - docker
+    - device-mapper-event-libs
   notify: Restart Docker
+
+- name: "Change docker options"
+  lineinfile: >
+    line='OPTIONS={{ docker_opts }}'
+    regexp='^OPTIONS='
+    dest=/etc/sysconfig/docker
+    state=present
+  when: docker_opts != ''
+
+- name: "Change docker options"
+  lineinfile: >
+    line='INSECURE_REGISTRY={{ docker_insecure_registry }}'
+    regexp='INSECURE_REGISTRY='
+    dest=/etc/sysconfig/docker
+    state=present
+  when: docker_insecure_registry != ''
+
