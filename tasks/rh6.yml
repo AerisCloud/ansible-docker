@@ -39,4 +39,4 @@
     regexp='^other_args='
     dest=/etc/sysconfig/docker
     state=present
-  when: docker_opts != '' and docker_inscure_registry != ''
+  when: docker_opts != '' and docker_insecure_registry != ''
