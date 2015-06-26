@@ -3,6 +3,7 @@
     name=kernel
     state=latest
   register: kernel
+  when: update_kernel|bool
 
 - name: "Restart machine"
   shell: |
