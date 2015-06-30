@@ -31,5 +31,13 @@
   yum: >
     name=docker-io
     enablerepo=epel
-    state=present
+    state=latest
   notify: Restart Docker
+
+- name: "Change docker options"
+  lineinfile: >
+    line='other_args={{ docker_opts }} {{docker_insecure_registry}}'
+    regexp='^other_args='
+    dest=/etc/sysconfig/docker
+    state=present
+  when: docker_opts != '' and docker_insecure_registry != ''
