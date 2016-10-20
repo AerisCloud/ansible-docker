@@ -1,12 +1,10 @@
-- include: rh6.yml
+- fail: msg="The system is running a version of RedHat that is not supported by this playbook"
   when: ansible_distribution_major_version|int == 6
 
-- include: rh7.yml
-  when: ansible_distribution_major_version|int == 7
-
-- name: "Change docker options"
-  lineinfile: >
-    line='other_args={{ docker_opts }}'
-    regexp='^other_args='
-    dest=/etc/sysconfig/docker
+- name: "Install docker"
+  yum: >
+    name=docker-engine
+    enablerepo=dockerrepo
     state=present
+  notify: Restart docker
+

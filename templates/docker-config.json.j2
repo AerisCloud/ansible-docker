@@ -1,0 +1,25 @@
+{
+	"hosts": {{ docker_hosts | to_json }},
+	"ip": {{ docker_ip | to_json }},
+	"log-level": {{ docker_log_level | to_json }},
+{% if docker_log_driver is defined %}
+	"log-driver": {{ docker_log_driver | to_json }},
+{% if docker_log_opts is defined %}
+	"log-opts": {{ docker_log_opts | to_json }},
+{% endif %}
+{% endif %}
+{% if docker_labels is defined %}
+	"labels": {{ docker_labels | to_json }},
+{% endif %}
+{% if docker_tls.enabled %}
+	"tls": {{ docker_tls.enabled | to_json }},
+	"tlsverify": {{ docker_tls.verify | to_json }},
+	"tlscacert": {{ docker_tls.cacert | to_json }},
+	"tlscert": {{ docker_tls.cert | to_json }},
+	"tlskey": {{ docker_tls.key | to_json }},
+{% endif %}
+{% if docker_registry_mirror | length %}
+	"registry-mirror": {{ docker_registry_mirror | to_json }},
+{% endif %}
+	"insecure-registries": {{ docker_insecure_registries | to_json }}
+}

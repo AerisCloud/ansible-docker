@@ -1,0 +1,4 @@
+AerisCloud.*
+*.log
+.vagrant
+*.retry

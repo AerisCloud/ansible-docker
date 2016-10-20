@@ -1,0 +1,77 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# Make sure that ansible is setup correctly
+if ["up", "provision"].include? ARGV[0] then
+  puts "Syncing role data"
+  system "rsync -avc \
+                --exclude=tests \
+                --exclude=.git \
+                '#{File.dirname(File.dirname(__FILE__))}/' \
+                '#{File.dirname(__FILE__)}/ansible/AerisCloud.docker'"
+
+  unless File.exist?("ansible/AerisCloud.repos") then
+    puts "Installing missing dependencies"
+    system "ansible-galaxy install -r ansible/dependencies.yml -p ansible"
+  end
+end
+
+Vagrant.configure("2") do |config|
+  config.vm.box = "ubuntu/xenial64"
+
+  # Create a private network, which allows host-only access to the machine
+  # using a specific IP.
+  # config.vm.network "private_network", ip: "192.168.33.10"
+
+  # Create a public network, which generally matched to bridged network.
+  # Bridged networks make the machine appear as another physical device on
+  # your network.
+  # config.vm.network "public_network"
+
+  # Share an additional folder to the guest VM. The first argument is
+  # the path on the host to the actual folder. The second argument is
+  # the path on the guest to mount the folder. And the optional third
+  # argument is a set of non-required options.
+  # config.vm.synced_folder "../data", "/vagrant_data"
+
+  config.vm.provider "virtualbox" do |vb|
+     # Customize the amount of memory on the VM:
+     vb.memory = "512"
+  end
+
+  config.vm.define "ubuntu" do |ubuntu|
+    ubuntu.vm.box = "ubuntu/xenial64"
+
+    # The base xenial box doesn't have python installed so we need to install it manually
+    ubuntu.vm.provision "shell", inline: <<-SHELL
+    if
+      [[ ! -f /usr/bin/python ]];
+    then
+      apt-get update
+      apt-get install -y python-minimal
+    fi
+SHELL
+
+    # This bit is duplicated between each machines because the order is important on this one
+    # See the vagrant documentation about multi-machine and merging order
+    ubuntu.vm.provision "ansible" do |ansible|
+      ansible.playbook = "ansible/test-playbook.yml"
+    end
+  end
+
+  config.vm.define "debian" do |debian|
+    debian.vm.box = "debian/jessie64"
+
+    debian.vm.provision "ansible" do |ansible|
+      ansible.playbook = "ansible/test-playbook.yml"
+    end
+  end
+
+  config.vm.define "centos" do |centos|
+    centos.vm.box = "centos/7"
+
+    centos.vm.provision "ansible" do |ansible|
+      ansible.playbook = "ansible/test-playbook.yml"
+    end
+  end
+end

@@ -1,9 +1,30 @@
 ---
 - include: Debian.yml
-  when: ansible_os_family == "Debian"
+  static: no
+  when: ansible_os_family == 'Debian'
 
 - include: RedHat.yml
+  static: no
   when: ansible_os_family == "RedHat"
+
+# Not a big fan of this but the default package explicitly prevents defining the hosts
+# option in the daemon config by adding a useless -H option on the dockerd start command,
+# this service file removes it
+- name: Update systemd definition to allow for custom listen options
+  template: src=docker.service.j2 dest=/lib/systemd/system/docker.service
+  register: systemd_service
+
+- name: Reload systemd
+  command: /bin/systemctl daemon-reload
+  when: systemd_service|changed
+
+- name: "Ensure that /etc/docker exists"
+  file: path=/etc/docker state=directory mode=0755
+
+- name: Docker default config file
+  template: src=docker-config.json.j2 dest=/etc/docker/daemon.json
+  notify:
+    - Restart docker
 
 - name: "Make sure docker is running"
   service: >
