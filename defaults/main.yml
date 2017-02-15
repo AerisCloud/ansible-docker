@@ -5,8 +5,7 @@ docker_repo: main
 # docker_repo: experimental
 # By default we listen on the docker socket, if you want to listen on TCP just
 # update this variable to add new entries such as "tcp://192.168.0.1:4738"
-docker_hosts:
-- unix:///var/run/docker.sock
+docker_hosts: "{{ docker_default_hosts[ansible_os_family] | list }}"
 # Default IP when binding container ports
 docker_ip: "0.0.0.0"
 # The logging level of the daemon

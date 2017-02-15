@@ -7,11 +7,14 @@
   static: no
   when: ansible_os_family == "RedHat"
 
+- name: Create drop-in folder
+  file: path=/etc/systemd/system/docker.service.d state=directory mode=0755
+
 # Not a big fan of this but the default package explicitly prevents defining the hosts
 # option in the daemon config by adding a useless -H option on the dockerd start command,
 # this service file removes it
-- name: Update systemd definition to allow for custom listen options
-  template: src=docker.service.j2 dest=/lib/systemd/system/docker.service
+- name: Create drop-in systemd definition to allow for custom listen options
+  template: src=docker.service.j2 dest=/etc/systemd/system/docker.service.d/docker.conf
   register: systemd_service
 
 - name: Reload systemd
