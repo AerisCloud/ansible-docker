@@ -1,19 +1,31 @@
-- name: Import Docker APT public key.
+- name: "Import Docker APT public key."
   apt_key:
     keyserver: "{{ docker_pubkey_server }}"
     id: "{{ docker_pubkey_id }}"
     state: present
+  tags:
+    - docker
+    - package
 
-- name: Install apt-transport-https if necessary.
+- name: "Install apt-transport-https if necessary."
   apt:
-    name: apt-transport-https
+    name: "apt-transport-https"
     state: present
+  tags:
+    - docker
+    - package
 
-- name: Add the APT Docker repository.
+- name: "Add the APT Docker repository."
   apt_repository:
     repo: "{{ docker_apt_repo }}"
     state: present
     filename: 'docker'
+  tags:
+    - docker
+    - package
 
-- name: Install Docker
+- name: "Install Docker"
   apt: name=docker-engine state=present update_cache=yes
+  tags:
+    - docker
+    - package

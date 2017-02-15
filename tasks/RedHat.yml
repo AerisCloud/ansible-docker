@@ -1,5 +1,8 @@
-- fail: msg="The system is running a version of RedHat that is not supported by this playbook"
+- name: "Check CentOS version"
+  fail: msg="The system is running a version of RedHat that is not supported by this playbook"
   when: ansible_distribution_major_version|int == 6
+  tags:
+    - docker
 
 - name: "Install docker"
   yum: >
@@ -7,4 +10,6 @@
     enablerepo=dockerrepo
     state=present
   notify: Restart docker
-
+  tags:
+    - docker
+    - package

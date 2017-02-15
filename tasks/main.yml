@@ -2,35 +2,53 @@
 - include: Debian.yml
   static: no
   when: ansible_os_family == 'Debian'
+  tags:
+    - docker
 
 - include: RedHat.yml
   static: no
   when: ansible_os_family == "RedHat"
+  tags:
+    - docker
 
-- name: Create drop-in folder
+- name: "Create drop-in folder"
   file: path=/etc/systemd/system/docker.service.d state=directory mode=0755
+  tags:
+    - docker
+    - service
+    - files
 
 # Not a big fan of this but the default package explicitly prevents defining the hosts
 # option in the daemon config by adding a useless -H option on the dockerd start command,
 # this service file removes it
-- name: Create drop-in systemd definition to allow for custom listen options
+- name: "Create drop-in systemd definition to allow for custom listen options"
   template: src=docker.service.j2 dest=/etc/systemd/system/docker.service.d/docker.conf
-  register: systemd_service
-
-- name: Reload systemd
-  command: /bin/systemctl daemon-reload
-  when: systemd_service|changed
+  notify:
+    - Reload systemd
+  tags:
+    - docker
+    - service
+    - files
 
 - name: "Ensure that /etc/docker exists"
   file: path=/etc/docker state=directory mode=0755
+  tags:
+    - docker
+    - files
 
-- name: Docker default config file
+- name: "Docker default config file"
   template: src=docker-config.json.j2 dest=/etc/docker/daemon.json
   notify:
     - Restart docker
+  tags:
+    - docker
+    - files
 
 - name: "Make sure docker is running"
   service: >
     name=docker
     state=started
     enabled=yes
+  tags:
+    - docker
+    - service
