@@ -9,8 +9,11 @@
 
 - name: "Install apt-transport-https if necessary."
   apt:
-    name: "apt-transport-https"
+    name: "{{ item }}"
     state: present
+  with_items:
+    - apt-transport-https
+    - ca-certificates
   tags:
     - docker
     - package
@@ -25,7 +28,12 @@
     - package
 
 - name: "Install Docker"
-  apt: name=docker-engine state=present update_cache=yes
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - docker-engine
+    - linux-image-extra-virtual
   tags:
     - docker
     - package
