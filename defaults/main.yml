@@ -1,0 +1,30 @@
+---
+# Docker repository branch
+docker_repo: main
+# docker_repo: testing
+# docker_repo: experimental
+# By default we listen on the docker socket, if you want to listen on TCP just
+# update this variable to add new entries such as "tcp://192.168.0.1:4738"
+docker_hosts: "{{ docker_default_hosts[ansible_os_family] | list }}"
+# Default IP when binding container ports
+docker_ip: "0.0.0.0"
+# The logging level of the daemon
+docker_log_level: "info"
+# Preferred Docker registry mirror
+docker_registry_mirror: []
+# Add insecure registries
+docker_insecure_registries: []
+# Setup TLS options
+docker_tls:
+  enabled: false
+  verify: false
+  cacert: ""
+  cert: ""
+  key: ""
+# Enable SELinux support
+docker_selinux: false
+# Cluster advertising
+docker_cluster:
+  advertise: ""
+  store: ""
+  options: {}
