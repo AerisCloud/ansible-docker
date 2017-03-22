@@ -2,6 +2,15 @@
 	"hosts": {{ docker_hosts | to_json }},
 	"ip": {{ docker_ip | to_json }},
 	"log-level": {{ docker_log_level | to_json }},
+{% if docker_dns is defined %}
+	"dns": {{ docker_dns | to_json }},
+{% endif %}
+{% if docker_dns_opts is defined %}
+	"dns-opts": {{ docker_dns_opts | to_json }},
+{% endif %}
+{% if docker_dns_search is defined %}
+	"dns-search": {{ docker_dns_search | to_json }},
+{% endif %}
 {% if docker_log_driver is defined %}
 	"log-driver": {{ docker_log_driver | to_json }},
 {% if docker_log_opts is defined %}
