@@ -4,11 +4,21 @@
   tags:
     - docker
 
+- name: "Make sure to remove older versions of docker"
+  yum:
+    name: "{{ item }}"
+    state: absent
+  with_items:
+    - docker
+    - docker-common
+    - docker-selinux
+    - docker-engine
+
 - name: "Install docker"
-  yum: >
-    name=docker-engine
-    enablerepo=dockerrepo
-    state=present
+  yum:
+    name: docker-ce
+    enablerepo: docker-ce-stable
+    state: present
   notify: Restart docker
   tags:
     - docker
