@@ -1,6 +1,15 @@
 {
 	"hosts": {{ docker_hosts | to_json }},
 	"ip": {{ docker_ip | to_json }},
+{% if docker_bip is defined %}
+	"bip": {{ docker_bip | to_json }},
+{% endif %}
+{% if docker_fixed_cidr is defined %}
+	"fixed-cidr": {{ docker_fixed_cidr | to_json }},
+{% endif %}
+{% if docker_default_gateway is defined %}
+	"default-gateway": {{ docker_default_gateway | to_json }},
+{% endif %}
 	"log-level": {{ docker_log_level | to_json }},
 {% if docker_dns is defined %}
 	"dns": {{ docker_dns | to_json }},

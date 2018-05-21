@@ -36,6 +36,10 @@ for more details about what each of these do.
 |----------------------------|---------------|
 | docker_hosts               | array(string) |
 | docker_ip                  | string        |
+| docker_ip                  | string        |
+| docker_bip                 | string        |
+| docker_fixed_cidr          | string        |
+| docker_default_gateway     | string        |
 | docker_dns                 | array(string) |
 | docker_dns_opts            | array(string) |
 | docker_dns_search          | array(string) |
